@@ -13,10 +13,10 @@
 	keccak-hash          = "0.10.0"
 	log                  = "0.4.17"
 	num                  = { version = "0.4", features = [ "rand" ] }
-	plonky2              = { git = "https://github.com/polymerdao/plonky2", rev = "4cb0b48df1d227d5461a4c28ed025aaea64e2e62" }
-	plonky2_field        = { git = "https://github.com/polymerdao/plonky2", rev = "4cb0b48df1d227d5461a4c28ed025aaea64e2e62" }
-	plonky2_u32          = { git = "https://github.com/polymerdao/plonky2", rev = "4cb0b48df1d227d5461a4c28ed025aaea64e2e62" }
-	plonky2_util         = { git = "https://github.com/polymerdao/plonky2", rev = "4cb0b48df1d227d5461a4c28ed025aaea64e2e62" }
+	plonky2              = { path = "../plonky2/plonky2" }
+	plonky2_field        = { path = "../plonky2/field" }
+	plonky2_u32          = { path = "../plonky2/u32" }
+	plonky2_util         = { path = "../plonky2/util" }
 	poseidon-permutation = { path = "../poseidon-permutation-rs" }
 	rand                 = "0.8.4"
 	serde                = "1.0.145"

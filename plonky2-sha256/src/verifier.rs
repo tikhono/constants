@@ -184,7 +184,9 @@ where
     Ok((proof, data.verifier_only, data.common))
 }
 
-fn fib_proof<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: usize>(input : u32) -> Result<ProofTuple<F, C, D>> {
+fn fib_proof<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: usize>(
+    input: u32,
+) -> Result<ProofTuple<F, C, D>> {
     // const D: usize = 2;
     // type C = PoseidonGoldilocksConfig;
     // type F = <C as GenericConfig<D>>::F;
@@ -210,10 +212,10 @@ fn fib_proof<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: 
 
     // Provide initial values.
     let mut pw = PartialWitness::new();
-    if (input == 1){
+    if (input == 1) {
         pw.set_target(initial_a, F::ZERO);
         pw.set_target(initial_b, F::ONE);
-    }else{
+    } else {
         pw.set_target(initial_a, F::ONE);
         pw.set_target(initial_b, F::TWO);
     }
@@ -230,7 +232,6 @@ fn fib_proof<F: RichField + Extendable<D>, C: GenericConfig<D, F = F>, const D: 
 
     Ok((proof, data.verifier_only, data.common))
 }
-
 
 #[derive(Serialize)]
 pub struct VerifierConfig {
@@ -1031,6 +1032,7 @@ pub fn generate_circom_verifier<
             || gate_name[0..15].eq("PoseidonMdsGate")
             || gate_name[0..16].eq("MulExtensionGate")
             || gate_name[0..16].eq("RandomAccessGate")
+            //|| gate_name[0..17].eq("U32ArithmeticGate")
             || gate_name[0..18].eq("ExponentiationGate")
             || gate_name[0..21].eq("ReducingExtensionGate")
             || gate_name[0..23].eq("ArithmeticExtensionGate")
@@ -1144,7 +1146,8 @@ mod tests {
     };
 
     use crate::verifier::{
-        generate_circom_verifier, generate_proof_base64, generate_verifier_config, recursive_proof,fib_proof,aggregation_proof
+        aggregation_proof, fib_proof, generate_circom_verifier, generate_proof_base64,
+        generate_verifier_config, recursive_proof,
     };
 
     /// Creates a dummy proof which should have roughly `num_dummy_gates` gates.
@@ -1316,7 +1319,8 @@ mod tests {
         let proof1 = fib_proof::<F, C, D>(1)?;
         let proof2 = fib_proof::<F, C, D>(2)?;
 
-        let agg_proof = aggregation_proof::<F , C, C, D>(&proof1, Some(proof2), &standard_config, None)?;
+        let agg_proof =
+            aggregation_proof::<F, C, C, D>(&proof1, Some(proof2), &standard_config, None)?;
         let (agg_p, vd, cd) = agg_proof;
 
         // let (proof, vd, cd) =
@@ -1327,7 +1331,8 @@ mod tests {
             recursive_proof::<F, CBn128, C, D>(agg_p, vd, cd, &standard_config, None, true, true)?;
 
         let conf = generate_verifier_config(&recursive_proof)?;
-        let (circom_constants, circom_gates) = generate_circom_verifier(&conf, &recursive_cd, &recursive_vd)?;
+        let (circom_constants, circom_gates) =
+            generate_circom_verifier(&conf, &recursive_cd, &recursive_vd)?;
 
         let mut circom_file = File::create("./circom/circuits/constants.circom")?;
         circom_file.write_all(circom_constants.as_bytes())?;
@@ -1347,5 +1352,5 @@ mod tests {
         conf_file.write_all(serde_json::to_string(&conf)?.as_ref())?;
 
         Ok(())
-    } 
+    }
 }
